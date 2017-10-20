@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using RedisSample;
 using RedisSample.Models;
+using RedisSample.Redis;
+using StackExchange.Redis;
 
 namespace RedisSample.Controllers
 {
@@ -15,9 +17,38 @@ namespace RedisSample.Controllers
     {
         private MyDbContext db = new MyDbContext();
 
+        public IEnumerable<RedisValue> ReadData()
+        {
+            var result = new List<RedisValue>();
+            var cache = RedisConnectorHelper.Connection.GetDatabase();
+            var devicesCount = 10000;
+            for (int i = 0; i < devicesCount; i++)
+            {
+                var value = cache.StringGet($"Device_Status:{i}");
+                result.Add(value);
+            }
+
+            return result;
+        }
+
+        public void SaveBigData()
+        {
+            var devicesCount = 10000;
+            var rnd = new Random();
+            var cache = RedisConnectorHelper.Connection.GetDatabase();
+
+            for (int i = 0; i < devicesCount; i++)
+            {
+                var value = rnd.Next(0, 10000);
+                cache.StringSet($"Device_Status:{i}", value);
+            }
+        }
+
         // GET: Foo
         public ActionResult Index()
         {
+            SaveBigData();
+            ReadData();
             return View(db.Foos.ToList());
         }
 
