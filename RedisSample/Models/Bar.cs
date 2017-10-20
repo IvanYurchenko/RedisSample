@@ -2,11 +2,11 @@
 {
     public class Bar
     {
-        public int Id { get; set; }
+        public virtual int Id { get; set; }
 
-        public int Amount { get; set; }
+        public virtual int Amount { get; set; }
 
-        public string Code { get; set; }
+        public virtual string Code { get; set; }
 
         public virtual Foo Foo { get; set; }
     }
