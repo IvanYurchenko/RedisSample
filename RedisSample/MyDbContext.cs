@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using RedisSample.Models;
 
@@ -14,20 +16,53 @@ namespace RedisSample
         public MyDbContext()
             : base("name=MyDbContext")
         {
+            Database.SetInitializer<MyDbContext>(new MyDbContextInitializer());
         }
 
         public DbSet<Foo> Foos { get; set; }
         public DbSet<Bar> Bars { get; set; }
-
-        // Add a DbSet for each entity type that you want to include in your model. For more information 
-        // on configuring and using a Code First model, see http://go.microsoft.com/fwlink/?LinkId=390109.
-
-        // public virtual DbSet<MyEntity> MyEntities { get; set; }
     }
 
-    //public class MyEntity
-    //{
-    //    public int Id { get; set; }
-    //    public string Name { get; set; }
-    //}
+    public class MyDbContextInitializer : DropCreateDatabaseAlways<MyDbContext>
+    {
+        protected override void Seed(MyDbContext context)
+        {
+            base.Seed(context);
+
+            var r = new Random();
+
+            for (int i = 0; i < 100; i++)
+            {
+                var foo = new Foo
+                {
+                    Description = "Detailed description of Foo " + i + ", hello world!",
+                    Title = "FOO #" + i,
+                    Bars = new List<Bar>()
+                };
+
+                var bar1 = new Bar
+                {
+                    Foo = foo,
+                    Amount = r.Next(100),
+                    Code = "BARCODE" + r.Next(10000)
+                };
+
+                var bar2 = new Bar
+                {
+                    Foo = foo,
+                    Amount = r.Next(100),
+                    Code = "BARCODE" + r.Next(10000)
+                };
+
+                foo.Bars.Add(bar1);
+                foo.Bars.Add(bar2);
+
+                context.Bars.Add(bar1);
+                context.Bars.Add(bar2);
+                context.Foos.Add(foo);
+            }
+
+            context.SaveChanges();
+        }
+    }
 }

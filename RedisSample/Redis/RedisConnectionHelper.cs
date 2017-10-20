@@ -7,7 +7,7 @@ namespace RedisSample.Redis
     {
         static RedisConnectorHelper()
         {
-            lazyConnection = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect("localhost"));
+            lazyConnection = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect("localhost,allowAdmin=true"));
         }
 
         private static Lazy<ConnectionMultiplexer> lazyConnection;
