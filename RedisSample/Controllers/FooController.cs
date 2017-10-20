@@ -31,17 +31,11 @@ namespace RedisSample.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var title = RedisManager.GetTitle(id.Value);
-            if (title == null)
+            var foo = RedisManager.GetFoo(id.Value);
+            if (foo == null)
             {
                 return HttpNotFound();
             }
-
-            var foo = new Foo
-            {
-                Id = id.Value,
-                Title = title
-            };
 
             return View(foo);
         }

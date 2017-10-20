@@ -31,7 +31,7 @@ namespace RedisSample
 
             var r = new Random();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 1; i < 100; i++)
             {
                 var foo = new Foo
                 {

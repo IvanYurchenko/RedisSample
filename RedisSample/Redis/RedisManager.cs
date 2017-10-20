@@ -1,4 +1,7 @@
-﻿using StackExchange.Redis;
+﻿using System.Web.Helpers;
+using Newtonsoft.Json;
+using RedisSample.Models;
+using StackExchange.Redis;
 
 namespace RedisSample.Redis
 {
@@ -20,12 +23,12 @@ namespace RedisSample.Redis
                 var cache = RedisConnectorHelper.Connection.GetDatabase();
                 foreach (var foo in db.Foos)
                 {
-                    cache.StringSet($"Something:{foo.Id}", foo.Title);
+                    cache.StringSet($"Something:{foo.Id}", JsonConvert.SerializeObject(foo));
                 }
             }
         }
 
-        public static string GetTitle(int id)
+        public static Foo GetFoo(int id)
         {
             if (!_fetched)
             {
@@ -35,7 +38,8 @@ namespace RedisSample.Redis
 
             var cache = RedisConnectorHelper.Connection.GetDatabase();
             RedisValue value = cache.StringGet($"Something:{id}");
-            return value;
+            if (value.IsNull) return null;
+            return JsonConvert.DeserializeObject<Foo>(value);
         }
     }
 }

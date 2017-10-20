@@ -1,4 +1,6 @@
-﻿namespace RedisSample.Models
+﻿using Newtonsoft.Json;
+
+namespace RedisSample.Models
 {
     public class Bar
     {
@@ -8,6 +10,7 @@
 
         public virtual string Code { get; set; }
 
+        [JsonIgnore]
         public virtual Foo Foo { get; set; }
     }
 }
